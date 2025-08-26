@@ -1,0 +1,629 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Java Basics: House Analogy</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: #333;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            background: linear-gradient(145deg, #ffffff, #f8f9ff);
+            border-radius: 25px;
+            box-shadow: 0 25px 50px rgba(102,126,234,0.2);
+            overflow: hidden;
+            border: 1px solid rgba(255,255,255,0.8);
+        }
+
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 40px;
+            text-align: center;
+        }
+
+        .header h1 {
+            margin: 0 0 10px 0;
+            font-size: 2.8em;
+            font-weight: 700;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .header p {
+            margin: 0;
+            opacity: 0.9;
+            font-size: 1.3em;
+            font-weight: 300;
+        }
+
+        .main-content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 0;
+            min-height: 700px;
+        }
+
+        .house-section {
+            background: linear-gradient(180deg, #a8edea 0%, #fed6e3 100%);
+            padding: 40px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .code-section {
+            background: linear-gradient(145deg, #1a1a2e, #16213e);
+            color: #e6e6fa;
+            padding: 40px;
+            font-family: 'JetBrains Mono', 'Fira Code', 'Consolas', monospace;
+            position: relative;
+            border-left: 4px solid #ff6b6b;
+        }
+
+        .house {
+            position: relative;
+            width: 100%;
+            height: 450px;
+            margin: 20px auto;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .blueprint {
+            width: 200px;
+            height: 120px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            border: 3px dashed #ffffff;
+            border-radius: 15px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            color: white;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 10px 30px rgba(102,126,234,0.3);
+            margin-bottom: 40px;
+        }
+
+        .blueprint:hover {
+            transform: scale(1.05) rotate(-1deg);
+            box-shadow: 0 15px 40px rgba(102,126,234,0.4);
+        }
+
+        .blueprint-title {
+            font-size: 1.1em;
+            margin-bottom: 5px;
+        }
+
+        .blueprint-subtitle {
+            font-size: 0.8em;
+            opacity: 0.8;
+        }
+
+        .actual-house {
+            width: 280px;
+            height: 220px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .actual-house:hover {
+            transform: scale(1.02);
+        }
+
+        .roof {
+            width: 0;
+            height: 0;
+            border-left: 140px solid transparent;
+            border-right: 140px solid transparent;
+            border-bottom: 90px solid #ff6b6b;
+            position: relative;
+            filter: drop-shadow(0 6px 12px rgba(255,107,107,0.3));
+        }
+
+        .house-body {
+            width: 280px;
+            height: 130px;
+            background: linear-gradient(145deg, #feca57, #ff9ff3);
+            position: relative;
+            box-shadow: 0 10px 30px rgba(255,107,107,0.2);
+            border-radius: 0 0 15px 15px;
+        }
+
+        .feature {
+            position: absolute;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border-radius: 8px;
+        }
+
+        .feature:hover {
+            transform: scale(1.1);
+            z-index: 10;
+        }
+
+        .door {
+            bottom: 0;
+            left: 25px;
+            width: 45px;
+            height: 70px;
+            background: linear-gradient(145deg, #54a0ff, #5f27cd);
+            border-radius: 10px 10px 0 0;
+            box-shadow: 0 4px 15px rgba(84,160,255,0.3);
+        }
+
+        .window {
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(135deg, #48dbfb, #0abde3);
+            border: 3px solid #ff6348;
+            box-shadow: 0 4px 15px rgba(72,219,251,0.3);
+        }
+
+        .window1 { top: 25px; right: 40px; }
+        .window2 { top: 25px; right: 100px; }
+
+        .chimney {
+            top: -60px;
+            right: 40px;
+            width: 30px;
+            height: 60px;
+            background: linear-gradient(145deg, #ff3838, #ff6b6b);
+            border-radius: 10px 10px 0 0;
+            box-shadow: 0 4px 15px rgba(255,56,56,0.3);
+        }
+
+        .code-display {
+            background: linear-gradient(145deg, #2d3748, #4a5568);
+            border-radius: 15px;
+            padding: 30px;
+            margin-top: 20px;
+            border: 2px solid #ff6b6b;
+            font-size: 13px;
+            line-height: 1.8;
+            min-height: 400px;
+            overflow-y: auto;
+            box-shadow: 0 10px 30px rgba(255,107,107,0.2);
+            white-space: pre;
+            font-family: 'JetBrains Mono', 'Fira Code', 'Consolas', monospace;
+        }
+
+        .java-keyword { color: #ff6b6b; font-weight: bold; }
+        .java-class { color: #4ecdc4; font-weight: bold; }
+        .java-string { color: #ffe66d; }
+        .java-comment { color: #a8e6cf; font-style: italic; }
+        .java-method { color: #ff8b94; font-weight: bold; }
+
+        .concept-panel {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(135deg, rgba(102,126,234,0.95), rgba(118,75,162,0.95));
+            color: white;
+            padding: 40px;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            backdrop-filter: blur(10px);
+        }
+
+        .concept-content {
+            max-width: 600px;
+            background: rgba(255,255,255,0.1);
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+            border: 1px solid rgba(255,255,255,0.2);
+        }
+
+        .concept-content h3 {
+            font-size: 2.2em;
+            margin-bottom: 20px;
+            color: #ffe66d;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .concept-content p {
+            font-size: 1.1em;
+            line-height: 1.7;
+            margin-bottom: 25px;
+        }
+
+        .close-btn {
+            background: linear-gradient(135deg, #ff6b6b, #ee5a52);
+            color: white;
+            border: none;
+            padding: 15px 35px;
+            border-radius: 50px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: bold;
+            transition: all 0.3s ease;
+            box-shadow: 0 8px 25px rgba(238,90,82,0.3);
+        }
+
+        .close-btn:hover {
+            background: linear-gradient(135deg, #ee5a52, #ff3838);
+            transform: scale(1.05) translateY(-2px);
+            box-shadow: 0 12px 35px rgba(238,90,82,0.4);
+        }
+
+        .legend {
+            background: linear-gradient(135deg, rgba(255,255,255,0.95), rgba(248,249,255,0.95));
+            padding: 30px;
+            border-radius: 20px;
+            margin-top: 30px;
+            box-shadow: 0 10px 30px rgba(255,107,107,0.15);
+            border: 2px solid rgba(255,107,107,0.2);
+            backdrop-filter: blur(10px);
+        }
+
+        .legend h4 {
+            margin: 0 0 25px 0;
+            color: #2d3748;
+            font-size: 1.5em;
+            text-align: center;
+            font-weight: 600;
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            margin: 15px 0;
+            cursor: pointer;
+            padding: 12px;
+            border-radius: 12px;
+            transition: all 0.3s ease;
+            background: rgba(255,255,255,0.6);
+            font-weight: 500;
+        }
+
+        .legend-item:hover {
+            background: linear-gradient(135deg, rgba(255,107,107,0.2), rgba(255,159,243,0.2));
+            transform: translateX(8px);
+            box-shadow: 0 4px 15px rgba(255,107,107,0.2);
+        }
+
+        .legend-color {
+            width: 28px;
+            height: 28px;
+            border-radius: 8px;
+            margin-right: 15px;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.2);
+            flex-shrink: 0;
+        }
+
+        @media (max-width: 768px) {
+            .main-content {
+                grid-template-columns: 1fr;
+            }
+            
+            .header h1 {
+                font-size: 2.2em;
+            }
+            
+            .house {
+                transform: scale(0.8);
+            }
+            
+            body {
+                padding: 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🏠 Java OOP: House Analogy</h1>
+            <p>Click components to learn Java concepts through real-world analogies</p>
+        </div>
+        
+        <div class="main-content">
+            <div class="house-section">
+                <div class="house">
+                    <div class="blueprint" onclick="showConcept('class')">
+                        <div class="blueprint-title">📋 BLUEPRINT</div>
+                        <div class="blueprint-subtitle">Click to learn about Classes</div>
+                    </div>
+                    
+                    <div class="actual-house" onclick="showConcept('object')">
+                        <div class="roof"></div>
+                        <div class="house-body">
+                            <div class="feature door" onclick="event.stopPropagation(); showConcept('constructor')" title="Constructor"></div>
+                            <div class="feature window window1" onclick="event.stopPropagation(); showConcept('field')" title="Field"></div>
+                            <div class="feature window window2" onclick="event.stopPropagation(); showConcept('method')" title="Method"></div>
+                            <div class="feature chimney" onclick="event.stopPropagation(); showConcept('member')" title="Members"></div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="legend">
+                    <h4>🔗 Java Concept Mapping</h4>
+                    <div class="legend-item" onclick="showConcept('class')">
+                        <div class="legend-color" style="background: linear-gradient(135deg, #667eea, #764ba2);"></div>
+                        <span><strong>Blueprint</strong> → Class Definition</span>
+                    </div>
+                    <div class="legend-item" onclick="showConcept('object')">
+                        <div class="legend-color" style="background: linear-gradient(145deg, #feca57, #ff9ff3);"></div>
+                        <span><strong>Built House</strong> → Object/Instance</span>
+                    </div>
+                    <div class="legend-item" onclick="showConcept('field')">
+                        <div class="legend-color" style="background: linear-gradient(135deg, #48dbfb, #0abde3);"></div>
+                        <span><strong>House Features</strong> → Fields/Attributes</span>
+                    </div>
+                    <div class="legend-item" onclick="showConcept('constructor')">
+                        <div class="legend-color" style="background: linear-gradient(145deg, #54a0ff, #5f27cd);"></div>
+                        <span><strong>Build Instructions</strong> → Constructor</span>
+                    </div>
+                    <div class="legend-item" onclick="showConcept('method')">
+                        <div class="legend-color" style="background: linear-gradient(135deg, #48dbfb, #0abde3);"></div>
+                        <span><strong>House Functions</strong> → Methods</span>
+                    </div>
+                    <div class="legend-item" onclick="showConcept('member')">
+                        <div class="legend-color" style="background: linear-gradient(145deg, #ff3838, #ff6b6b);"></div>
+                        <span><strong>All Components</strong> → Class Members</span>
+                    </div>
+                </div>
+                
+                <div class="concept-panel" id="conceptPanel">
+                    <div class="concept-content" id="conceptContent">
+                        <button class="close-btn" onclick="hideConcept()">Got It!</button>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="code-section">
+                <h3 style="color: #4ecdc4; margin-top: 0; font-size: 1.4em;">💻 Professional Java Code</h3>
+                <div class="code-display" id="codeDisplay">// Class = Blueprint that defines how to build houses
+public class House {
+
+    // Fields = House features and characteristics
+    private String  address;
+    private int     numberOfRooms;
+    private String  color;
+    private boolean hasGarage;
+    private boolean doorsLocked;
+    private boolean lightsOn;
+
+    // Constructor = Instructions for building the house
+    public House(String address, int rooms, String color) {
+        this.address = address;
+        this.numberOfRooms = rooms;
+        this.color = color;
+        this.hasGarage = false;    // Default: no garage
+        this.doorsLocked = false; // Default: unlocked
+        this.lightsOn = false;    // Default: lights off
+    }
+
+    // Overloaded constructor = Alternative building instructions  
+    public House(String address, int rooms, String color, boolean garage) {
+        this.address = address;
+        this.numberOfRooms = rooms;
+        this.color = color;
+        this.hasGarage = garage;
+        this.doorsLocked = false;
+        this.lightsOn = false;
+    }
+
+    // Methods = Functions the house can perform
+    public void lockDoors() {
+        this.doorsLocked = true;
+        System.out.println("🔒 Doors locked at " + address);
+    }
+
+    public void unlockDoors() {
+        this.doorsLocked = false;
+        System.out.println("🔓 Doors unlocked at " + address);
+    }
+
+    public void turnOnLights() {
+        this.lightsOn = true;
+        System.out.println("💡 Lights on at " + address);
+    }
+
+    public void turnOffLights() {
+        this.lightsOn = false;
+        System.out.println("🌙 Lights off at " + address);
+    }
+
+    public void ringDoorbell() {
+        System.out.println("🔔 Ding dong! Visitor at " + address);
+    }
+
+    public void repaint(String newColor) {
+        this.color = newColor;
+        System.out.println("🎨 House repainted " + newColor);
+    }
+
+    // Getter methods = Check house status
+    public String getAddress() { return address; }
+    public boolean areDoorsLocked() { return doorsLocked; }
+    public boolean areLightsOn() { return lightsOn; }
+
+    public void showStatus() {
+        System.out.println("🏠 " + address + " Status:");
+        System.out.println("   Rooms: " + numberOfRooms);
+        System.out.println("   Color: " + color);
+        System.out.println("   Garage: " + (hasGarage ? "Yes" : "No"));
+        System.out.println("   Doors: " + (doorsLocked ? "Locked" : "Unlocked"));
+        System.out.println("   Lights: " + (lightsOn ? "On" : "Off"));
+    }
+
+    @Override
+    public String toString() {
+        return "House at " + address + ": " + numberOfRooms + 
+               " rooms, " + color + " color";
+    }
+}
+
+
+// Demo: Building and using houses from the blueprint
+public class HouseDemo {
+    public static void main(String[] args) {
+
+        // Create house objects using the blueprint
+        House myHouse = new House("123 Oak St", 3, "Blue");
+        House neighborHouse = new House("125 Oak St", 4, "Red", true);
+
+        // Check initial status
+        System.out.println("=== Initial Status ===");
+        myHouse.showStatus();
+        System.out.println();
+
+        // Use house functions
+        System.out.println("=== Evening Routine ===");
+        myHouse.turnOnLights();
+        myHouse.lockDoors();
+        myHouse.ringDoorbell();
+        System.out.println();
+
+        // Modify the house
+        System.out.println("=== Home Improvement ===");
+        myHouse.repaint("Forest Green");
+        System.out.println();
+
+        // Final status
+        System.out.println("=== Final Status ===");
+        myHouse.showStatus();
+        System.out.println("\n" + myHouse.toString());
+    }
+}</div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const concepts = {
+            'class': {
+                title: '📋 Class (Blueprint)',
+                description: 'A class is like an architectural blueprint that shows how to build houses. It contains specifications for house features (fields), step-by-step construction instructions (constructors), and a list of functions the house can perform (methods). The blueprint itself is not a house—it\'s a plan for creating many different houses.',
+                code: `// Class = Blueprint for building houses
+public class House {
+    // Specifications, instructions, and capabilities
+    // defined here, but no actual house exists yet
+}`
+            },
+            'object': {
+                title: '🏠 Object/Instance (Built House)',
+                description: 'An object (instance) is an actual house built by following the blueprint\'s instructions. Construction crews use the blueprint to create a real, physical house with specific features. You can build multiple houses from the same blueprint, each with unique characteristics like different addresses and colors.',
+                code: `// Creating actual houses from the blueprint
+House myHouse = new House("123 Oak St", 3, "Blue");
+House yourHouse = new House("456 Pine Ave", 2, "Red");
+
+// Each house is a separate, real object with its own features`
+            },
+            'field': {
+                title: '🏗️ Fields (House Features)',
+                description: 'Fields represent the features and characteristics that make each house unique—like address, number of rooms, color, garage status, and current states like whether doors are locked. These are the properties that distinguish one house from another and can change over time.',
+                code: `// Fields = House features and characteristics
+private String address;      // Where it's located
+private int numberOfRooms;   // How many rooms
+private String color;        // Paint color
+private boolean hasGarage;   // Has garage or not
+private boolean doorsLocked; // Current door status
+
+// Each house object has its own values for these`
+            },
+            'constructor': {
+                title: '🔨 Constructor (Build Instructions)',
+                description: 'A constructor provides detailed instructions to the construction crew on how to build a specific house. When you want a new house, you specify requirements (address, rooms, color) and the constructor ensures the house is built correctly with those specifications.',
+                code: `// Constructor = Building instructions for crew
+public House(String address, int rooms, String color) {
+    // Instructions: Build house with these specs
+    this.address = address;
+    this.numberOfRooms = rooms;
+    this.color = color;
+    this.hasGarage = false;    // Default: no garage
+    this.doorsLocked = false; // Default: unlocked
+}
+
+// Usage: House myHouse = new House("123 Oak St", 3, "Blue");`
+            },
+            'method': {
+                title: '⚡ Methods (House Functions)',
+                description: 'Methods define the functions and capabilities that houses can perform—like locking doors, turning lights on/off, ringing the doorbell, repainting, or checking status. These are the actions you can command the house to do or information you can request from it.',
+                code: `// Methods = Functions the house can perform
+public void lockDoors() {
+    this.doorsLocked = true;
+    System.out.println("🔒 Doors locked");
+}
+
+public void turnOnLights() {
+    this.lightsOn = true;
+    System.out.println("💡 Lights on");
+}
+
+public void ringDoorbell() {
+    System.out.println("🔔 Ding dong!");
+}
+
+public String getAddress() {
+    return address;  // Get house information
+}`
+            },
+            'member': {
+                title: '📐 Members (All Blueprint Parts)',
+                description: 'Members represent ALL the components included in the house blueprint—the feature specifications (fields), construction instructions (constructors), and function definitions (methods). Together, these members define everything needed to build and operate houses.',
+                code: `// Members = ALL blueprint components together
+public class House {
+    // Field members (feature specifications)
+    private String address;
+    private int numberOfRooms;
+    
+    // Constructor members (build instructions)
+    public House(String addr, int rooms) { ... }
+    
+    // Method members (house functions)
+    public void lockDoors() { ... }
+    public void turnOnLights() { ... }
+    public String getAddress() { ... }
+}`
+            }
+        };
+
+        function showConcept(conceptName) {
+            const concept = concepts[conceptName];
+            const panel = document.getElementById('conceptPanel');
+            const content = document.getElementById('conceptContent');
+            
+            content.innerHTML = `
+                <h3>${concept.title}</h3>
+                <p>${concept.description}</p>
+                <div style="background: rgba(45, 55, 72, 0.9); padding: 20px; border-radius: 10px; margin: 20px 0; text-align: left;">
+                    <pre style="margin: 0; color: #e6e6fa; font-family: 'JetBrains Mono', 'Fira Code', monospace; font-size: 0.9em; line-height: 1.6;">${concept.code}</pre>
+                </div>
+                <button class="close-btn" onclick="hideConcept()">Got It!</button>
+            `;
+            
+            panel.style.display = 'flex';
+        }
+
+        function hideConcept() {
+            document.getElementById('conceptPanel').style.display = 'none';
+        }
+
+        // Close when clicking outside
+        document.getElementById('conceptPanel').addEventListener('click', function(e) {
+            if (e.target === this) {
+                hideConcept();
+            }
+        });
+    </script>
+</body>
+</html>
