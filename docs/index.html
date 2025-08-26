@@ -294,10 +294,13 @@
         <div class="quiz-section">
             <h2>🧠 Analogy Quiz</h2>
             <div id="quizContainer">
-                <div id="quizQuestion" class="quiz-question">Ready to test your knowledge?</div>
+                <div id="quizQuestion" class="quiz-question">Test your knowledge with 5 random analogies!</div>
+                <div id="quizProgress" style="display: none; text-align: center; margin-bottom: 20px; color: #4a5568; font-weight: bold;"></div>
                 <div id="quizOptions" class="quiz-options"></div>
-                <button onclick="startQuiz()">Start Quiz 🚀</button>
+                <button id="startQuizBtn" onclick="startQuiz()">Start 5-Question Quiz 🚀</button>
+                <button id="nextQuestionBtn" onclick="nextQuestion()" style="display: none;">Next Question →</button>
                 <div id="quizResult" class="quiz-result"></div>
+                <div id="finalScore" style="display: none; text-align: center; margin-top: 20px;"></div>
             </div>
         </div>
 
@@ -496,10 +499,52 @@
                 analogy: "📞 Phone book - look up a name to get a phone number",
                 correct: "HashMap",
                 options: ["Array", "ArrayList", "Stack", "HashMap"]
+            },
+            {
+                analogy: "🏗️ Construction crew that builds your house with your specifications",
+                correct: "Constructor",
+                options: ["Method", "Constructor", "Class", "Object"]
+            },
+            {
+                analogy: "🔧 A tool in a toolbox - each tool does one specific job",
+                correct: "Method",
+                options: ["Constructor", "Variable", "Method", "Class"]
+            },
+            {
+                analogy: "🎒 A magic backpack that expands to fit whatever you put in it",
+                correct: "ArrayList",
+                options: ["Array", "ArrayList", "Stack", "Queue"]
+            },
+            {
+                analogy: "🚨 Fire alarm - something unexpected happened that needs attention",
+                correct: "Exception",
+                options: ["Method", "Variable", "Exception", "Loop"]
+            },
+            {
+                analogy: "📱 Smartphone - you use simple buttons without knowing the complex electronics inside",
+                correct: "Encapsulation",
+                options: ["Inheritance", "Polymorphism", "Encapsulation", "Interface"]
+            },
+            {
+                analogy: "🎭 Different actors playing the same role - same character, different interpretations",
+                correct: "Polymorphism",
+                options: ["Inheritance", "Encapsulation", "Interface", "Polymorphism"]
+            },
+            {
+                analogy: "🔒 Personal diary - only you can read what's inside",
+                correct: "Private",
+                options: ["Public", "Protected", "Private", "Static"]
             }
         ];
 
         let currentQuiz = null;
+        let quizState = {
+            questions: [],
+            currentQuestion: 0,
+            score: 0,
+            userAnswers: [],
+            isActive: false
+        };
 
         function generateAnalogy() {
             const select = document.getElementById('conceptSelect');
@@ -536,49 +581,152 @@
         }
 
         function startQuiz() {
-            currentQuiz = quizQuestions[Math.floor(Math.random() * quizQuestions.length)];
+            // Reset quiz state
+            quizState = {
+                questions: getRandomQuestions(5),
+                currentQuestion: 0,
+                score: 0,
+                userAnswers: [],
+                isActive: true
+            };
             
-            document.getElementById('quizQuestion').textContent = `Which Java concept does this analogy represent?\n"${currentQuiz.analogy}"`;
+            // Show first question
+            showQuestion();
             
+            // Update UI
+            document.getElementById('startQuizBtn').style.display = 'none';
+            document.getElementById('quizProgress').style.display = 'block';
+            document.getElementById('finalScore').style.display = 'none';
+        }
+
+        function getRandomQuestions(count) {
+            const shuffled = [...quizQuestions].sort(() => 0.5 - Math.random());
+            return shuffled.slice(0, count);
+        }
+
+        function showQuestion() {
+            const question = quizState.questions[quizState.currentQuestion];
+            
+            // Update progress
+            document.getElementById('quizProgress').textContent = 
+                `Question ${quizState.currentQuestion + 1} of ${quizState.questions.length}`;
+            
+            // Show question
+            document.getElementById('quizQuestion').textContent = 
+                `Which Java concept does this analogy represent?\n"${question.analogy}"`;
+            
+            // Create options
             const optionsContainer = document.getElementById('quizOptions');
             optionsContainer.innerHTML = '';
             
-            currentQuiz.options.forEach(option => {
+            question.options.forEach(option => {
                 const div = document.createElement('div');
                 div.className = 'quiz-option';
                 div.textContent = option;
-                div.onclick = () => checkAnswer(option, div);
+                div.onclick = () => selectAnswer(option, div, question);
                 optionsContainer.appendChild(div);
             });
             
+            // Clear previous results
             document.getElementById('quizResult').innerHTML = '';
-            document.querySelector('.quiz-section button').style.display = 'none';
+            document.getElementById('nextQuestionBtn').style.display = 'none';
         }
 
-        function checkAnswer(selected, element) {
+        function selectAnswer(selected, element, question) {
+            // Disable all options
             const options = document.querySelectorAll('.quiz-option');
-            options.forEach(opt => opt.onclick = null); // Disable further clicks
+            options.forEach(opt => opt.onclick = null);
             
-            if (selected === currentQuiz.correct) {
+            // Store answer
+            quizState.userAnswers.push({
+                question: question.analogy,
+                selected: selected,
+                correct: question.correct,
+                isCorrect: selected === question.correct
+            });
+            
+            // Update score
+            if (selected === question.correct) {
+                quizState.score++;
                 element.classList.add('correct');
                 document.getElementById('quizResult').innerHTML = 
-                    '<div class="correct-answer">🎉 Correct! Great job understanding the analogy!</div>';
+                    '<div class="correct-answer">🎉 Correct!</div>';
             } else {
                 element.classList.add('incorrect');
                 // Highlight correct answer
                 options.forEach(opt => {
-                    if (opt.textContent === currentQuiz.correct) {
+                    if (opt.textContent === question.correct) {
                         opt.classList.add('correct');
                     }
                 });
                 document.getElementById('quizResult').innerHTML = 
-                    `<div class="incorrect-answer">❌ Not quite! The correct answer is "${currentQuiz.correct}"</div>`;
+                    `<div class="incorrect-answer">❌ The correct answer is "${question.correct}"</div>`;
             }
             
-            // Show start quiz button again after 2 seconds
-            setTimeout(() => {
-                document.querySelector('.quiz-section button').style.display = 'inline-block';
-            }, 2000);
+            // Show next button or finish quiz
+            if (quizState.currentQuestion < quizState.questions.length - 1) {
+                document.getElementById('nextQuestionBtn').style.display = 'inline-block';
+            } else {
+                setTimeout(() => {
+                    finishQuiz();
+                }, 1500);
+            }
+        }
+
+        function nextQuestion() {
+            quizState.currentQuestion++;
+            showQuestion();
+        }
+
+        function finishQuiz() {
+            const percentage = Math.round((quizState.score / quizState.questions.length) * 100);
+            let message = '';
+            let emoji = '';
+            
+            if (percentage >= 90) {
+                emoji = '🏆';
+                message = 'Outstanding! You\'ve mastered Java analogies!';
+            } else if (percentage >= 70) {
+                emoji = '🎉';
+                message = 'Great job! You have a solid understanding!';
+            } else if (percentage >= 50) {
+                emoji = '👍';
+                message = 'Good work! Keep studying those analogies!';
+            } else {
+                emoji = '📚';
+                message = 'Keep learning! Try the analogy generator for more practice!';
+            }
+            
+            const finalScoreHTML = `
+                <div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 25px; border-radius: 15px; box-shadow: 0 10px 25px rgba(0,0,0,0.2);">
+                    <div style="font-size: 3rem; margin-bottom: 10px;">${emoji}</div>
+                    <div style="font-size: 1.5rem; font-weight: bold; margin-bottom: 10px;">Quiz Complete!</div>
+                    <div style="font-size: 2rem; margin-bottom: 10px;">Score: ${quizState.score}/${quizState.questions.length} (${percentage}%)</div>
+                    <div style="font-size: 1.1rem; margin-bottom: 20px;">${message}</div>
+                    <button onclick="resetQuiz()" style="background: white; color: #667eea; border: none; padding: 12px 24px; border-radius: 8px; font-weight: bold; cursor: pointer; font-size: 1rem;">
+                        Take Another Quiz 🔄
+                    </button>
+                </div>
+            `;
+            
+            document.getElementById('finalScore').innerHTML = finalScoreHTML;
+            document.getElementById('finalScore').style.display = 'block';
+            document.getElementById('quizProgress').style.display = 'none';
+            document.getElementById('quizQuestion').textContent = 'Quiz Results';
+            document.getElementById('quizOptions').innerHTML = '';
+            document.getElementById('quizResult').innerHTML = '';
+            document.getElementById('nextQuestionBtn').style.display = 'none';
+        }
+
+        function resetQuiz() {
+            quizState.isActive = false;
+            document.getElementById('quizQuestion').textContent = 'Test your knowledge with 5 random analogies!';
+            document.getElementById('quizProgress').style.display = 'none';
+            document.getElementById('quizOptions').innerHTML = '';
+            document.getElementById('quizResult').innerHTML = '';
+            document.getElementById('finalScore').style.display = 'none';
+            document.getElementById('startQuizBtn').style.display = 'inline-block';
+            document.getElementById('nextQuestionBtn').style.display = 'none';
         }
 
         // Initialize with a random analogy
